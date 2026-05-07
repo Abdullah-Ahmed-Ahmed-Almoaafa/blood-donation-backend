@@ -14,5 +14,7 @@
         "SESSION_DRIVER": "cookie",
         "CACHE_STORE": "array",
         "APP_STORAGE": "/tmp"
-    }
+    },
+    "outputDirectory": "public",
+    "installCommand": "composer install"
 }
