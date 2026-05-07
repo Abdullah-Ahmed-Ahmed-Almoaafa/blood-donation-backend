@@ -1,6 +1,7 @@
 <?php
 
-// إعداد بيئة العمل يدوياً لضمان عدم محاولة الكتابة في أي مكان محمي
+putenv('APP_ENV=production');
+putenv('APP_DEBUG=true');
 putenv('APP_STORAGE=/tmp');
 putenv('VIEW_COMPILED_PATH=/tmp');
 putenv('SESSION_DRIVER=cookie');
