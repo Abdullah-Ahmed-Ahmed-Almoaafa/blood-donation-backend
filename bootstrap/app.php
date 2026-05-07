@@ -4,6 +4,14 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
+// هذه الأسطر قبل الـ return
+if (isset($_SERVER['VERCEL_URL'])) {
+    putenv('APP_STORAGE=/tmp');
+    putenv('VIEW_COMPILED_PATH=/tmp');
+    putenv('CACHE_STORE=array');
+    putenv('SESSION_DRIVER=cookie');
+}
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -12,19 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // تعريف الأسماء المستعارة للميدل وير الخاصة بك
         $middleware->alias([
             'active' => \App\Http\Middleware\EnsureUserIsActive::class,
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })
-    ->registered(function ($app) {
-        // هذا الجزء حاسم لعمل التخزين في Vercel
-        if (env('APP_ENV') === 'production') {
-            $app->useStoragePath(env('APP_STORAGE', '/tmp'));
-        }
-    })
+    // استخدام المجلد المؤقت رسمياً
+    ->withStorage(env('APP_STORAGE', base_path('storage'))) 
     ->create();
