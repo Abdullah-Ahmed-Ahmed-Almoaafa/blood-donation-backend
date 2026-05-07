@@ -1,19 +1,10 @@
 <?php
 
-// إعدادات Vercel الإجبارية
-putenv('VIEW_COMPILED_PATH=/tmp');
-putenv('CACHE_STORE=array');
-putenv('SESSION_DRIVER=cookie');
+// إعداد بيئة العمل يدوياً لضمان عدم محاولة الكتابة في أي مكان محمي
 putenv('APP_STORAGE=/tmp');
-
-$_ENV['VIEW_COMPILED_PATH'] = '/tmp';
-$_ENV['CACHE_STORE'] = 'array';
-$_ENV['SESSION_DRIVER'] = 'cookie';
-$_ENV['APP_STORAGE'] = '/tmp';
-
-// إعادة توجيه التخزين المؤقت
-if (!defined('STORAGE_PATH')) {
-    define('STORAGE_PATH', '/tmp');
-}
+putenv('VIEW_COMPILED_PATH=/tmp');
+putenv('SESSION_DRIVER=cookie');
+putenv('CACHE_STORE=array');
+putenv('LOG_CHANNEL=stderr');
 
 require __DIR__ . '/../public/index.php';
