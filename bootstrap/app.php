@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-// إعدادات Vercel - قبل بناء التطبيق
+// إعدادات Vercel - منع الكتابة على نظام الملفات قبل تشغيل التطبيق
 if (function_exists('putenv')) {
     putenv('VIEW_COMPILED_PATH=/tmp');
     putenv('CACHE_STORE=array');
@@ -20,7 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // لا تنسى إعادة تعريف الميدل وير هنا لكي يعمل تطبيق Flutter
         $middleware->alias([
             'active' => \App\Http\Middleware\EnsureUserIsActive::class,
             'role' => \App\Http\Middleware\CheckRole::class,
@@ -28,4 +27,11 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->registered(function ($app) {
+        // الحل الحاسم لمشكلة bootstrap/cache: توجيهه للمجلد المؤقت
+        if (isset($_SERVER['VERCEL_URL'])) {
+            $app->useBootstrapPath('/tmp');
+        }
+    })
+    ->create();
